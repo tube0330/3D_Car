@@ -197,7 +197,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 100000, guid: 5e9e851c0e142814dac026a256ba2ac0, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1883024396}
   m_SourcePrefab: {fileID: 100100000, guid: 5e9e851c0e142814dac026a256ba2ac0, type: 3}
 --- !u!1 &242347441
 GameObject:
@@ -210,9 +213,9 @@ GameObject:
   - component: {fileID: 242347442}
   - component: {fileID: 242347443}
   - component: {fileID: 242347444}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: RideCar
-  m_TagString: Untagged
+  m_TagString: CAR
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -281,6 +284,10 @@ PrefabInstance:
     - target: {fileID: 100006, guid: 228446c01d0a75f4f8258bec388cd6d1, type: 3}
       propertyPath: m_Name
       value: B_R_col
+      objectReference: {fileID: 0}
+    - target: {fileID: 100006, guid: 228446c01d0a75f4f8258bec388cd6d1, type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 400006, guid: 228446c01d0a75f4f8258bec388cd6d1, type: 3}
       propertyPath: m_LocalPosition.x
@@ -363,15 +370,15 @@ WheelCollider:
   m_WheelDampingRate: 0.25
   m_ForwardFriction:
     m_ExtremumSlip: 0.4
-    m_ExtremumValue: 1
+    m_ExtremumValue: 4
     m_AsymptoteSlip: 0.8
-    m_AsymptoteValue: 0.5
+    m_AsymptoteValue: 2
     m_Stiffness: 1
   m_SidewaysFriction:
     m_ExtremumSlip: 0.2
-    m_ExtremumValue: 1
+    m_ExtremumValue: 4
     m_AsymptoteSlip: 0.5
-    m_AsymptoteValue: 0.75
+    m_AsymptoteValue: 2
     m_Stiffness: 1
   m_IncludeLayers:
     serializedVersion: 2
@@ -487,6 +494,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: F_R_col
       objectReference: {fileID: 0}
+    - target: {fileID: 100006, guid: 228446c01d0a75f4f8258bec388cd6d1, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 400006, guid: 228446c01d0a75f4f8258bec388cd6d1, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0.71899414
@@ -568,15 +579,15 @@ WheelCollider:
   m_WheelDampingRate: 0.25
   m_ForwardFriction:
     m_ExtremumSlip: 0.4
-    m_ExtremumValue: 1
+    m_ExtremumValue: 4
     m_AsymptoteSlip: 0.8
-    m_AsymptoteValue: 0.5
+    m_AsymptoteValue: 2
     m_Stiffness: 1
   m_SidewaysFriction:
     m_ExtremumSlip: 0.2
-    m_ExtremumValue: 1
+    m_ExtremumValue: 4
     m_AsymptoteSlip: 0.5
-    m_AsymptoteValue: 0.75
+    m_AsymptoteValue: 2
     m_Stiffness: 1
   m_IncludeLayers:
     serializedVersion: 2
@@ -599,7 +610,7 @@ GameObject:
   - component: {fileID: 461972497}
   - component: {fileID: 461972496}
   - component: {fileID: 461972495}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: BackBumper
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -704,7 +715,7 @@ GameObject:
   - component: {fileID: 501216071}
   - component: {fileID: 501216070}
   - component: {fileID: 501216069}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: FrontBumper
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -806,7 +817,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 549457469}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Wheel_M
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -842,7 +853,7 @@ GameObject:
   m_Component:
   - component: {fileID: 684292231}
   - component: {fileID: 684292232}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Point Light_R
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -934,9 +945,21 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 549457469}
     m_Modifications:
+    - target: {fileID: 100002, guid: 228446c01d0a75f4f8258bec388cd6d1, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 100004, guid: 228446c01d0a75f4f8258bec388cd6d1, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 100006, guid: 228446c01d0a75f4f8258bec388cd6d1, type: 3}
       propertyPath: m_Name
       value: F_L_M
+      objectReference: {fileID: 0}
+    - target: {fileID: 100006, guid: 228446c01d0a75f4f8258bec388cd6d1, type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 400006, guid: 228446c01d0a75f4f8258bec388cd6d1, type: 3}
       propertyPath: m_LocalPosition.x
@@ -999,7 +1022,7 @@ GameObject:
   m_Component:
   - component: {fileID: 974471720}
   - component: {fileID: 974471721}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Point Light_L
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1092,7 +1115,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1012696075}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Headlight
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1203,13 +1226,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1029256630}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.40821788, y: -0.23456968, z: 0.10938163, w: 0.8754261}
+  m_LocalRotation: {x: 0.061323967, y: -0.25829688, z: 0.016431704, w: 0.9639772}
   m_LocalPosition: {x: 0, y: 3, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
+  m_LocalEulerAnglesHint: {x: 7.28, y: -30, z: 0}
 --- !u!1001 &1040868030
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1218,9 +1241,21 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 549457469}
     m_Modifications:
+    - target: {fileID: 100002, guid: 228446c01d0a75f4f8258bec388cd6d1, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 100004, guid: 228446c01d0a75f4f8258bec388cd6d1, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 100006, guid: 228446c01d0a75f4f8258bec388cd6d1, type: 3}
       propertyPath: m_Name
       value: F_R_M
+      objectReference: {fileID: 0}
+    - target: {fileID: 100006, guid: 228446c01d0a75f4f8258bec388cd6d1, type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 400006, guid: 228446c01d0a75f4f8258bec388cd6d1, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1283,7 +1318,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1057872029}
   - component: {fileID: 1057872030}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Spot Light
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1376,7 +1411,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1121373454}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: TakeoffBox
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1406,9 +1441,21 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 549457469}
     m_Modifications:
+    - target: {fileID: 100002, guid: 228446c01d0a75f4f8258bec388cd6d1, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 100004, guid: 228446c01d0a75f4f8258bec388cd6d1, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 100006, guid: 228446c01d0a75f4f8258bec388cd6d1, type: 3}
       propertyPath: m_Name
       value: B_R_M
+      objectReference: {fileID: 0}
+    - target: {fileID: 100006, guid: 228446c01d0a75f4f8258bec388cd6d1, type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 400006, guid: 228446c01d0a75f4f8258bec388cd6d1, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1470,7 +1517,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1311090435}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Wheel_Col
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1507,6 +1554,10 @@ PrefabInstance:
     - target: {fileID: 100006, guid: 228446c01d0a75f4f8258bec388cd6d1, type: 3}
       propertyPath: m_Name
       value: F_L_col
+      objectReference: {fileID: 0}
+    - target: {fileID: 100006, guid: 228446c01d0a75f4f8258bec388cd6d1, type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 400006, guid: 228446c01d0a75f4f8258bec388cd6d1, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1589,15 +1640,15 @@ WheelCollider:
   m_WheelDampingRate: 0.25
   m_ForwardFriction:
     m_ExtremumSlip: 0.4
-    m_ExtremumValue: 1
+    m_ExtremumValue: 4
     m_AsymptoteSlip: 0.8
-    m_AsymptoteValue: 0.5
+    m_AsymptoteValue: 2
     m_Stiffness: 1
   m_SidewaysFriction:
     m_ExtremumSlip: 0.2
-    m_ExtremumValue: 1
+    m_ExtremumValue: 4
     m_AsymptoteSlip: 0.5
-    m_AsymptoteValue: 0.75
+    m_AsymptoteValue: 2
     m_Stiffness: 1
   m_IncludeLayers:
     serializedVersion: 2
@@ -1618,7 +1669,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1646444166}
   - component: {fileID: 1646444167}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Spot Light
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1711,7 +1762,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1672513348}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: BrakeLight
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1746,6 +1797,10 @@ PrefabInstance:
     - target: {fileID: 100006, guid: 228446c01d0a75f4f8258bec388cd6d1, type: 3}
       propertyPath: m_Name
       value: B_L_col
+      objectReference: {fileID: 0}
+    - target: {fileID: 100006, guid: 228446c01d0a75f4f8258bec388cd6d1, type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 400006, guid: 228446c01d0a75f4f8258bec388cd6d1, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1828,15 +1883,15 @@ WheelCollider:
   m_WheelDampingRate: 0.25
   m_ForwardFriction:
     m_ExtremumSlip: 0.4
-    m_ExtremumValue: 1
+    m_ExtremumValue: 4
     m_AsymptoteSlip: 0.8
-    m_AsymptoteValue: 0.5
+    m_AsymptoteValue: 2
     m_Stiffness: 1
   m_SidewaysFriction:
     m_ExtremumSlip: 0.2
-    m_ExtremumValue: 1
+    m_ExtremumValue: 4
     m_AsymptoteSlip: 0.5
-    m_AsymptoteValue: 0.75
+    m_AsymptoteValue: 2
     m_Stiffness: 1
   m_IncludeLayers:
     serializedVersion: 2
@@ -1983,6 +2038,23 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 2.2291565, y: 1.1105535, z: 5.5405426}
   m_Center: {x: -0.016540527, y: 1.6814185, z: -0.049049377}
+--- !u!1 &1883024390 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 100000, guid: 5e9e851c0e142814dac026a256ba2ac0, type: 3}
+  m_PrefabInstance: {fileID: 2138449}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1883024396
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1883024390}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b112dab4ab0fa74448f7e6cd6ffae5c2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1917822406
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1991,9 +2063,21 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 549457469}
     m_Modifications:
+    - target: {fileID: 100002, guid: 228446c01d0a75f4f8258bec388cd6d1, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 100004, guid: 228446c01d0a75f4f8258bec388cd6d1, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 100006, guid: 228446c01d0a75f4f8258bec388cd6d1, type: 3}
       propertyPath: m_Name
       value: B_L_M
+      objectReference: {fileID: 0}
+    - target: {fileID: 100006, guid: 228446c01d0a75f4f8258bec388cd6d1, type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 400006, guid: 228446c01d0a75f4f8258bec388cd6d1, type: 3}
       propertyPath: m_LocalPosition.x
@@ -2059,12 +2143,20 @@ PrefabInstance:
       value: PlayerCar
       objectReference: {fileID: 0}
     - target: {fileID: 100002, guid: 44de2aa5b901aaa4c83a9da0fe4ae9c2, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 100002, guid: 44de2aa5b901aaa4c83a9da0fe4ae9c2, type: 3}
       propertyPath: m_TagString
       value: Untagged
       objectReference: {fileID: 0}
     - target: {fileID: 100004, guid: 44de2aa5b901aaa4c83a9da0fe4ae9c2, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 100004, guid: 44de2aa5b901aaa4c83a9da0fe4ae9c2, type: 3}
       propertyPath: m_TagString
-      value: CAR
+      value: Untagged
       objectReference: {fileID: 0}
     - target: {fileID: 400002, guid: 44de2aa5b901aaa4c83a9da0fe4ae9c2, type: 3}
       propertyPath: m_LocalPosition.x

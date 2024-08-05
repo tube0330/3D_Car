@@ -71,7 +71,7 @@ public class PlayerCar : MonoBehaviour
 
     void FixedUpdate()
     {
-        if (!C_ridecar.isRide)
+        if (!C_ridecar.isRide)  //내렸을 때 자동차 멈추기
         {
             backL_col.brakeTorque = maxBreak;
             backR_col.brakeTorque = maxBreak;
@@ -90,10 +90,20 @@ public class PlayerCar : MonoBehaviour
         if (C_ridecar.isRide)
         {
             if (Input.GetKey(KeyCode.B))
+            {
                 brake = maxBreak;
+                breakLight_L.SetActive(true);
+                breakLight_R.SetActive(true);
+
+                if (Input.GetKeyUp(KeyCode.B))
+                {
+                    breakLight_L.SetActive(false);
+                    breakLight_R.SetActive(false);
+                }
+            }
 
             else CarMove();
-        }   
+        }
 
         //뒷바퀴 Torque 회전력
         backL_col.motorTorque = motor * maxTorque;

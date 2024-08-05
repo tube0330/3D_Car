@@ -30,13 +30,16 @@ public class RideCar : MonoBehaviour
         }
     }
 
-    private void PlayerGetInCar()
+    public void PlayerGetInCar()
     {
         isRide = true;
         FPSPlayer.SetActive(false);
         mainCam.depth = 0f;
-        //AudioListener listener = mainCam
+        /* AudioListener listener = mainCam.GetComponent<AudioListener>();
+        listener.enabled = true; */
         FPSPlayer.transform.GetChild(0).GetComponent<Camera>().depth = -1;
+        /* listener = FPSPlayer.GetComponent<AudioListener>();
+        listener.enabled = false; */
     }
 
     private void PlayerGetOutCar()
@@ -46,6 +49,9 @@ public class RideCar : MonoBehaviour
         isRide = false;
         FPSPlayer.SetActive(true);
         mainCam.depth = 0;
+        /* AudioListener listener = mainCam.GetComponent<AudioListener>();
+        listener.enabled = false;
+        listener = FPSPlayer.GetComponent<AudioListener>(); */
         FPSPlayer.transform.GetChild(0).GetComponent<Camera>().depth = -1; ;
     }
 }
