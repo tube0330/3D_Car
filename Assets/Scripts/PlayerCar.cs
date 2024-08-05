@@ -39,10 +39,29 @@ public class PlayerCar : MonoBehaviour
     private float motor = 0f; //음수면 후진, 양수면 전진
     private float brake = 0f; //브레이크
 
+    [Header("Lights")]
+    public GameObject headLight_L;
+    public GameObject headLight_R;
+    private bool isHeadLightOn = false;
+    public GameObject breakLight_L;
+    public GameObject breakLight_R;
+
     void Start()
     {
         rb = GetComponent<Rigidbody>();
         rb.centerOfMass = CentOfMass;
+
+        headLight_L.SetActive(false);
+        headLight_R.SetActive(false);
+        breakLight_L.SetActive(false);
+        breakLight_R.SetActive(false);
+    }
+
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.F))
+            HeadLightOnOff();
+
     }
 
     void FixedUpdate()
@@ -53,29 +72,11 @@ public class PlayerCar : MonoBehaviour
         forward = Mathf.Clamp(Input.GetAxis("Vertical"), 0f, 1f);       //전진만 함
         back = -1 * Mathf.Clamp(Input.GetAxis("Vertical"), -1f, 0f);   //후진만 함
 
+
         if (Input.GetKey(KeyCode.B))
             brake = maxBreak;
-            
-        else
-        {
-            if (Input.GetKey(KeyCode.W))
-                StartCoroutine(ForwardCar());
 
-            if (Input.GetKey(KeyCode.S))
-                StartCoroutine(BackwardCar());
-
-            if (isReverse)   //후진중일경우
-            {
-                motor = -1 * back;
-                brake = forward;
-            }
-
-            else    //전진중일경우
-            {
-                motor = forward;
-                brake = back;
-            }
-        }
+        else CarMove();
 
         //뒷바퀴 Torque 회전력
         backL_col.motorTorque = motor * maxTorque;
@@ -100,6 +101,43 @@ public class PlayerCar : MonoBehaviour
         backR_M.Rotate(backR_col.rpm * Time.deltaTime, 0f, 0f);
     }
 
+    private void HeadLightOnOff()
+    {
+        isHeadLightOn = !isHeadLightOn;
+        //Debug.Log(isHeadLightOn);
+        headLight_L.SetActive(isHeadLightOn);
+        headLight_R.SetActive(isHeadLightOn);
+    }
+
+    private void BreakLightOnOff(bool state)
+    {
+        breakLight_L.SetActive(state);
+        breakLight_R.SetActive(state);
+    }
+
+    private void CarMove()
+    {
+        if (Input.GetKey(KeyCode.W))
+            StartCoroutine(ForwardCar());
+
+        if (Input.GetKey(KeyCode.S))
+            StartCoroutine(BackwardCar());
+
+        if (isReverse)   //후진중일경우
+        {
+            BreakLightOnOff(isReverse);
+            motor = -1 * back;
+            brake = forward;
+        }
+
+        else    //전진중일경우
+        {
+            BreakLightOnOff(isReverse);
+            motor = forward;
+            brake = back;
+        }
+    }
+
     IEnumerator ForwardCar()
     {
         yield return new WaitForSeconds(0.1f);
@@ -107,6 +145,8 @@ public class PlayerCar : MonoBehaviour
 
         if (back > 0f) isReverse = true;
         if (forward > 0f) isReverse = false;
+
+        BreakLightOnOff(isReverse);
     }
 
     IEnumerator BackwardCar()
@@ -116,5 +156,7 @@ public class PlayerCar : MonoBehaviour
 
         if (back > 0f) isReverse = true;
         if (forward > 0f) isReverse = false;
+
+        BreakLightOnOff(isReverse);
     }
 }
