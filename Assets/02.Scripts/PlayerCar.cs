@@ -1,10 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class PlayerCar : MonoBehaviour
 {
+    private RideCar C_ridecar;
+
     [Header("wheel Colliders")]
     public WheelCollider frontL_col;
     public WheelCollider frontR_col;
@@ -55,10 +56,14 @@ public class PlayerCar : MonoBehaviour
         headLight_R.SetActive(false);
         breakLight_L.SetActive(false);
         breakLight_R.SetActive(false);
+
+        C_ridecar = transform.GetChild(5).GetComponent<RideCar>();
     }
 
     void Update()
     {
+        if (!C_ridecar.isRide) return;
+
         if (Input.GetKeyDown(KeyCode.F))
             HeadLightOnOff();
 
@@ -66,6 +71,15 @@ public class PlayerCar : MonoBehaviour
 
     void FixedUpdate()
     {
+        if (!C_ridecar.isRide)
+        {
+            backL_col.brakeTorque = maxBreak;
+            backR_col.brakeTorque = maxBreak;
+            backL_col.motorTorque = 0f;
+            backR_col.motorTorque = 0f;
+            return;
+        }
+
         currentSpeed = rb.velocity.sqrMagnitude;    //휠 콜라이더가 마찰력에 의해 리지드바디의 전체 속도(이륜)를 전달
 
         steer = Mathf.Clamp(Input.GetAxis("Horizontal"), -1f, 1f);
@@ -73,10 +87,13 @@ public class PlayerCar : MonoBehaviour
         back = -1 * Mathf.Clamp(Input.GetAxis("Vertical"), -1f, 0f);   //후진만 함
 
 
-        if (Input.GetKey(KeyCode.B))
-            brake = maxBreak;
+        if (C_ridecar.isRide)
+        {
+            if (Input.GetKey(KeyCode.B))
+                brake = maxBreak;
 
-        else CarMove();
+            else CarMove();
+        }   
 
         //뒷바퀴 Torque 회전력
         backL_col.motorTorque = motor * maxTorque;
