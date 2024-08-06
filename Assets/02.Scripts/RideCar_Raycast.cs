@@ -4,22 +4,25 @@ using UnityEngine;
 
 public class RideCar_Raycast : MonoBehaviour
 {
-    public int carLayer = LayerMask.NameToLayer("Car");
+    public int carLayer;
     Camera cam;
-    RideCar C_ridecar;
+    RideCar ridecar;
 
     void Start()
     {
         cam = this.gameObject.GetComponentInChildren<Camera>();
-        C_ridecar = GetComponent<RideCar>();
+        ridecar = GetComponent<RideCar>();
+        carLayer = LayerMask.NameToLayer("Car");
     }
 
     void Update()
     {
         if (Physics.Raycast(cam.transform.position, cam.transform.forward, 25f, carLayer))
         {
+            Debug.Log("car");
+            Debug.DrawRay(cam.transform.position, cam.transform.forward * 25f, Color.green);
             if (Input.GetKeyDown(KeyCode.E))
-                C_ridecar.PlayerGetInCar();
+                ridecar.PlayerGetInCar();
         }
     }
 }
