@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class Path : MonoBehaviour
 {
-    [SerializeField] List<Transform> Nodes = new List<Transform>();
+    [SerializeField] List<Transform> Nodes;
     [SerializeField] Color lineColor;
 
     void OnDrawGizmos()
