@@ -26,7 +26,7 @@ public class AICar : MonoBehaviour
 
     public float curSpeed = 0f; //현재 속도
     int curNode = 0;    //현재노드
-    float maxSpeed = 150f;
+    float maxSpeed = 100f;
     public float maxMotorTorque = 1000f; //wheel collider가 회전하는 최대 힘
     public float maxSteerAngle = 30f; //앞바퀴 회전각도
 

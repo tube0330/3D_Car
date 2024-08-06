@@ -218,6 +218,67 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 1883024396}
   m_SourcePrefab: {fileID: 100100000, guid: 5e9e851c0e142814dac026a256ba2ac0, type: 3}
+--- !u!1001 &56003028
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 100066, guid: b6ef65860bf4bf64fb23f16c0cec2f6d, type: 3}
+      propertyPath: m_Name
+      value: HorseCart_01_Base
+      objectReference: {fileID: 0}
+    - target: {fileID: 400066, guid: b6ef65860bf4bf64fb23f16c0cec2f6d, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 125
+      objectReference: {fileID: 0}
+    - target: {fileID: 400066, guid: b6ef65860bf4bf64fb23f16c0cec2f6d, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400066, guid: b6ef65860bf4bf64fb23f16c0cec2f6d, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 250
+      objectReference: {fileID: 0}
+    - target: {fileID: 400066, guid: b6ef65860bf4bf64fb23f16c0cec2f6d, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 400066, guid: b6ef65860bf4bf64fb23f16c0cec2f6d, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400066, guid: b6ef65860bf4bf64fb23f16c0cec2f6d, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400066, guid: b6ef65860bf4bf64fb23f16c0cec2f6d, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400066, guid: b6ef65860bf4bf64fb23f16c0cec2f6d, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400066, guid: b6ef65860bf4bf64fb23f16c0cec2f6d, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400066, guid: b6ef65860bf4bf64fb23f16c0cec2f6d, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9500000, guid: b6ef65860bf4bf64fb23f16c0cec2f6d, type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: 4bbeda60a7108d0468f34c896818320b, type: 2}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: b6ef65860bf4bf64fb23f16c0cec2f6d, type: 3}
 --- !u!4 &63883192 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 400002, guid: 8f36cbf06e3a1774ca496ffb57c01bba, type: 3}
@@ -3377,7 +3438,7 @@ MonoBehaviour:
   Back_L_tr: {fileID: 1040231969026339698}
   Back_R_tr: {fileID: 1533440134241586609}
   curSpeed: 0
-  maxMotorTorque: 1000
+  maxMotorTorque: 700
   maxSteerAngle: 30
 --- !u!33 &2809923311570390955
 MeshFilter:
@@ -4206,3 +4267,4 @@ SceneRoots:
   - {fileID: 2138449}
   - {fileID: 1204193487}
   - {fileID: 3928593464193790403}
+  - {fileID: 56003028}
