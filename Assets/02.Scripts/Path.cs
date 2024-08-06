@@ -12,8 +12,8 @@ public class Path : MonoBehaviour
     {
         Gizmos.color = lineColor;
         Transform[] pathTransforms = GetComponentsInChildren<Transform>();
-
         Nodes = new List<Transform>();
+        
         for (int i = 0; i < pathTransforms.Length; i++)
         {
             if (pathTransforms[i] != transform) //자기 자신을 제외하고 하위 트랜스폼을 담음

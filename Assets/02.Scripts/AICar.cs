@@ -44,21 +44,23 @@ public class AICar : MonoBehaviour
         }
     }
 
-    void Update()
+    /* void Update()
     {
 
-    }
+    } */
 
     void FixedUpdate()
     {
         ApplySteer();
+        Drive();
+        CheckWayPointDistance();
     }
 
     void ApplySteer()   //앞바퀴 wheel collider의 회전각도에 따라 회전
     {
         Vector3 relativeVector = transform.InverseTransformPoint(pathList[curNode].position);   //월드좌표를 로컬좌표로 변환
 
-        float newSteer = (relativeVector.x / relativeVector.magnitude) * maxSteerAngle; //Pathtransform.x값 / Pathtransform의 개체 크기 * 30f
+        float newSteer = relativeVector.x / relativeVector.magnitude * maxSteerAngle; //Pathtransform.x값 / Pathtransform의 개체 크기 * 30f
 
         Front_L.steerAngle = newSteer;
         Front_R.steerAngle = newSteer;
@@ -71,5 +73,31 @@ public class AICar : MonoBehaviour
         분당 거리 계산: 바퀴 둘레에 분당 회전수(rpm)를 곱하여 분당 이동 거리를 구합니다.
         초당 거리 계산: 분당 거리를 60으로 나누어 초당 이동 거리를 구합니다.
         속도 계산: 초당 이동 거리를 1000으로 나누어 미터/초 단위의 속도로 변환합니다. */
+
+        if (curSpeed < maxSpeed)
+        {
+            //최대 구동력을 적용하여 차량이 계속 가속하도록 함
+            Back_L.motorTorque = maxMotorTorque;
+            Back_R.motorTorque = maxMotorTorque;
+        }
+
+        else
+        {
+            //속도가 설정된 최대 속도에 도달했으므로 구동력을 멈추어 더 이상의 가속을 방지하고, 속도를 일정하게 유지하려는 의도
+            Back_L.motorTorque = 0;
+            Back_R.motorTorque = 0;
+        }
+    }
+
+    void CheckWayPointDistance()
+    {
+        Debug.Log(curNode);
+        if(Vector3.Distance(transform.position, pathList[curNode].position) <= 10f)
+        {
+            if(curNode == pathList.Count - 1)    //마지막에 있을 때 다시 0으로 초기화
+            curNode = 0;
+
+            else curNode++; //다음 waypoint로 이동
+        }
     }
 }

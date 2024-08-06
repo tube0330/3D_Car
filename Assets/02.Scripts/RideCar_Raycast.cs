@@ -17,12 +17,12 @@ public class RideCar_Raycast : MonoBehaviour
 
     void Update()
     {
-        if (Physics.Raycast(cam.transform.position, cam.transform.forward, 25f, carLayer))
+       /*  if (Physics.Raycast(cam.transform.position, cam.transform.forward, 25f, carLayer))
         {
             Debug.Log("car");
             Debug.DrawRay(cam.transform.position, cam.transform.forward * 25f, Color.green);
             if (Input.GetKeyDown(KeyCode.E))
                 ridecar.PlayerGetInCar();
-        }
+        } */
     }
 }
