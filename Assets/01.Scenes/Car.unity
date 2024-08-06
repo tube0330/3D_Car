@@ -135,8 +135,16 @@ PrefabInstance:
       value: FPSController
       objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: 5e9e851c0e142814dac026a256ba2ac0, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: 5e9e851c0e142814dac026a256ba2ac0, type: 3}
       propertyPath: m_TagString
       value: Player
+      objectReference: {fileID: 0}
+    - target: {fileID: 100002, guid: 5e9e851c0e142814dac026a256ba2ac0, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 5e9e851c0e142814dac026a256ba2ac0, type: 3}
       propertyPath: m_LocalPosition.x
@@ -191,8 +199,16 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2000000, guid: 5e9e851c0e142814dac026a256ba2ac0, type: 3}
+      propertyPath: m_Depth
+      value: -1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2000000, guid: 5e9e851c0e142814dac026a256ba2ac0, type: 3}
       propertyPath: m_Enabled
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11400000, guid: 5e9e851c0e142814dac026a256ba2ac0, type: 3}
+      propertyPath: m_Enabled
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -2695,12 +2711,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1756773982}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 118, y: 1, z: -5}
+  m_LocalRotation: {x: -0.09465531, y: -0.017743757, z: 0.0014434876, w: -0.9953509}
+  m_LocalPosition: {x: 127.853195, y: 23.982851, z: 168.86893}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 2103234384}
+  m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1756773986
 MonoBehaviour:
@@ -2714,7 +2730,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f76806479d916a64aa03f8e3eba7912f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  target: {fileID: 2103234384}
+  target: {fileID: 63883192}
   distance: 10
   height: 5
   rotationDamping: 0
@@ -3028,9 +3044,6 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 400002, guid: 44de2aa5b901aaa4c83a9da0fe4ae9c2, type: 3}
       insertIndex: -1
       addedObject: {fileID: 461972498}
-    - targetCorrespondingSourceObject: {fileID: 400002, guid: 44de2aa5b901aaa4c83a9da0fe4ae9c2, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1756773985}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 100002, guid: 44de2aa5b901aaa4c83a9da0fe4ae9c2, type: 3}
       insertIndex: -1
@@ -3350,6 +3363,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 93e7b6d7d1b71a447b86b0e31b11378a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  rb: {fileID: 0}
+  CentOfMass: {x: 0, y: -0.5, z: 0}
+  path: {fileID: 0}
+  pathTransforms: []
+  pathList: []
+  Front_L: {fileID: 222822950}
+  Front_R: {fileID: 750868528}
+  Back_L: {fileID: 7015203178328491535}
+  Back_R: {fileID: 113148581}
+  Front_L_tr: {fileID: 4121258209829851611}
+  Front_R_tr: {fileID: 7639895428006869326}
+  Back_L_tr: {fileID: 1040231969026339698}
+  Back_R_tr: {fileID: 1533440134241586609}
 --- !u!33 &2809923311570390955
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -4106,6 +4132,7 @@ Transform:
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
+  - {fileID: 1756773985}
   - {fileID: 1029256632}
   - {fileID: 300341702}
   - {fileID: 2103234380}
