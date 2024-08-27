@@ -26,19 +26,8 @@ public class PhotonInit : MonoBehaviourPunCallbacks
     public override void OnConnectedToMaster()
     {
         print("마스터서버 연결 완");
-        PhotonNetwork.JoinLobby();
-    }
-
-    public override void OnJoinedLobby()
-    {
-        print("로비에 입장");
         inputField_ID.text = GetUserID();
-        PhotonNetwork.JoinRandomRoom(); //로비 입장했으면 아무 방이나 접속하도록
-    }
-
-    void OnGUI()    //왼쪽 상단에 나타냄
-    {
-        GUILayout.Label(PhotonNetwork.NetworkClientState.ToString());   //photonNetwork에 클라이언트 상태 정보 알려줌
+        PhotonNetwork.JoinLobby();
     }
 
     string GetUserID()
@@ -51,10 +40,23 @@ public class PhotonInit : MonoBehaviourPunCallbacks
         return userID;
     }
 
+    public override void OnJoinedLobby()
+    {
+        print("로비에 입장");
+        //PhotonNetwork.JoinRandomRoom(); //로비 입장했으면 아무 방이나 접속하도록
+    }
+
     public override void OnJoinRandomFailed(short returnCode, string message)
     {
         print("방 없음");
         PhotonNetwork.CreateRoom("*Room", new RoomOptions { MaxPlayers = 3 });
+    }
+
+    public override void OnCreateRoomFailed(short returnCode, string message)
+    {
+        Debug.Log("오류코드" + returnCode.ToString());
+        print("방 만들기 실패" + message);
+        PhotonNetwork.JoinRandomRoom();  //만들기 실패했으면 다시 로비로 이동
     }
 
     public override void OnCreatedRoom()
@@ -64,9 +66,18 @@ public class PhotonInit : MonoBehaviourPunCallbacks
 
     public override void OnJoinedRoom()
     {
-        print("방 입장");
+        print("방 입장 완");
         PhotonNetwork.NickName = inputField_ID.text;
+        SceneManager.LoadScene("F1TrackDisplayScene");  
     }
 
-    public void OnButtonClick() => SceneManager.LoadScene("F1TrackDisplayScene");
+    public void OnButtonClick()
+    {
+        PhotonNetwork.JoinRandomRoom();
+    }
+
+    void OnGUI()    //왼쪽 상단에 나타냄
+    {
+        GUILayout.Label(PhotonNetwork.NetworkClientState.ToString());   //photonNetwork에 클라이언트 상태 정보 알려줌
+    }
 }

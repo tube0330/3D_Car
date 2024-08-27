@@ -1,8 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
+using Photon.Pun;
 using UnityEngine;
+using UnityStandardAssets.Utility;
 
-public class PlayerCar : MonoBehaviour
+public class PlayerCar : MonoBehaviourPun, IPunObservable
 {
     [Header("Wheel Colliders")]
     public WheelCollider frontLeft_Col;
@@ -33,16 +35,38 @@ public class PlayerCar : MonoBehaviour
     private float brake = 0f;                       // 브레이크
 
     public bool isBrake = false;                    // 브레이크 밟았나[인스펙터 노출용]
+    Transform tr;
+
+    void Awake()
+    {
+        // photonView.Synchronization = ViewSynchronization.Unreliable;
+        // photonView.ObservedComponents[0] = this;
+        rb = GetComponent<Rigidbody>();
+        tr = transform;
+    }
 
     void Start()
     {
-        rb = GetComponent<Rigidbody>();
-        rb.centerOfMass = centerOfMass_var;             // 무게중심 설정
+        if (photonView.IsMine)
+        {
+            rb.centerOfMass = centerOfMass_var;             // 무게중심 설정
+            if (Camera.main.GetComponent<SmoothFollow>() != null)
+            {
+                Debug.Log("MainCamera Set");
+                Camera.main.GetComponent<SmoothFollow>().target = tr;
+                Camera.main.GetComponent<SmoothFollow>().rotationDamping = 3;
+                Camera.main.GetComponent<SmoothFollow>().heightDamping = 3;
+            }
+            else
+                Debug.Log("MainCamera null");
+        }
     }
 
     void FixedUpdate()
     {
         //if (!GetInOutCar.instance.carInside) return;
+
+        if (!photonView.IsMine) return;
         CarMoveWheel();
     }
 
@@ -54,10 +78,12 @@ public class PlayerCar : MonoBehaviour
         // }
         // if (!GetInOutCar.instance.carInside) return;
 
+        if (!photonView.IsMine) return;
         if (Input.GetKey(KeyCode.LeftShift))
             CarBrakeOn();
         else
             CarBrakeOff();
+
         CarMoveCondition();
         CarMoveInput();
         CarLight();
@@ -65,7 +91,7 @@ public class PlayerCar : MonoBehaviour
 
     private static void CarLight()
     {
-        if (Input.GetKeyDown(KeyCode.S))
+        if (Input.GetKey(KeyCode.S))
             CarLightCtrl.backLightsOn = true;
         else if (Input.GetKeyUp(KeyCode.S))
             CarLightCtrl.backLightsOn = false;
@@ -132,11 +158,27 @@ public class PlayerCar : MonoBehaviour
     {
         CarLightCtrl.backLightsOn = true;
         isBrake = true;
+        Debug.Log(CarLightCtrl.backLightsOn);
     }
     void CarBrakeOff()
     {
         if (isReverse) return;
         CarLightCtrl.backLightsOn = false;
         isBrake = false;
+    }
+
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+        if (stream.IsWriting)
+        {
+            stream.SendNext(tr.position);
+            stream.SendNext(tr.rotation);
+        }
+
+        else
+        {
+            tr.position = (Vector3)stream.ReceiveNext();
+            tr.rotation = (Quaternion)stream.ReceiveNext();
+        }
     }
 }
