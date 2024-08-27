@@ -4,186 +4,139 @@ using UnityEngine;
 
 public class PlayerCar : MonoBehaviour
 {
-    private RideCar C_ridecar;
-
-    [Header("wheel Colliders")]
-    public WheelCollider frontL_col;
-    public WheelCollider frontR_col;
-    public WheelCollider backL_col;
-    public WheelCollider backR_col;
-
-    [Header("wheel Models")]
-    public Transform frontL_M;
-    public Transform frontR_M;
-    public Transform backL_M;
-    public Transform backR_M;
-
+    [Header("Wheel Colliders")]
+    public WheelCollider frontLeft_Col;
+    public WheelCollider frontRight_Col;
+    public WheelCollider rearLeft_Col;
+    public WheelCollider rearRight_Col;
+    [Header("Wheel Models")]
+    public Transform frontLeft_Model;
+    public Transform frontRight_Model;
+    public Transform rearLeft_Model;
+    public Transform rearRight_Model;
     [Header("Mass Balance")]
-    public Vector3 CentOfMass = new Vector3(0.0f, -0.5f, 0f);   //자동차나 마차 등 바퀴가 있는 모델의 무게중심의 y축은 항상 0.5로 잡아야 함
+    public Vector3 centerOfMass_var = new Vector3(0f, -0.5f, 0f);   // 무게중심 설정. 높이를 조절하여 차량의 무게중심을 조절할 수 있다.
     public Rigidbody rb;
+    [Header("Front Wheel Max Steer Angle")]
+    private float maxSteerAngle = 35f;                   // 최대 조향각
+    [Header("Max Torque")]
+    private float maxTorque = 1000f;                     // 최대 토크
+    [Header("Max Brake")]
+    private float maxBrake = 150000f;                    // 최대 브레이크
+    [Header("Current Speed")]
+    public float currentSpeed = 0f;                      // 현재 속도
+    private float steer = 0f;                       // 조향
+    private float forward = 0f;                     // 전진
+    private float back = 0f;                        // 후진
+    private bool isReverse = false;                 // 후진 상태
+    private float motor = 0f;                       // 모터
+    private float brake = 0f;                       // 브레이크
 
-    [Header("앞바퀴 최대 회전각")]
-    public float maxSteerAngle = 35f;
-
-    [Header("최대 마찰력")]
-    public float maxTorque = 2500f;
-
-    [Header("최대 브레이크 강도")]
-    public float maxBreak = 5000f;
-
-    [Header("현재 스피드")]
-    public float currentSpeed = 0f;
-    private float steer = 0f;   //A, D 키 값을 받을 변수. 방향 잡는 용도
-    private float forward = 0f; //W만 받아 전진하는 변수
-    private float back = 0.0f;  //S만 받아 후진하는 변수
-    bool isReverse = false; //전진인지 후진인지 판단하는 변수
-    private float motor = 0f; //음수면 후진, 양수면 전진
-    private float brake = 0f; //브레이크
-
-    [Header("Lights")]
-    public GameObject headLight_L;
-    public GameObject headLight_R;
-    private bool isHeadLightOn = false;
-    public GameObject breakLight_L;
-    public GameObject breakLight_R;
+    public bool isBrake = false;                    // 브레이크 밟았나[인스펙터 노출용]
 
     void Start()
     {
         rb = GetComponent<Rigidbody>();
-        rb.centerOfMass = CentOfMass;
-
-        headLight_L.SetActive(false);
-        headLight_R.SetActive(false);
-        breakLight_L.SetActive(false);
-        breakLight_R.SetActive(false);
-
-        C_ridecar = transform.GetChild(5).GetComponent<RideCar>();
-    }
-
-    void Update()
-    {
-        if (!C_ridecar.isRide) return;
-
-        if (Input.GetKeyDown(KeyCode.F))
-            HeadLightOnOff();
-
+        rb.centerOfMass = centerOfMass_var;             // 무게중심 설정
     }
 
     void FixedUpdate()
     {
-        if (!C_ridecar.isRide)  //내렸을 때 자동차 멈추기
-        {
-            backL_col.brakeTorque = maxBreak;
-            backR_col.brakeTorque = maxBreak;
-            backL_col.motorTorque = 0f;
-            backR_col.motorTorque = 0f;
-            return;
-        }
-
-        currentSpeed = rb.velocity.sqrMagnitude;    //휠 콜라이더가 마찰력에 의해 리지드바디의 전체 속도(이륜)를 전달
-
-        steer = Mathf.Clamp(Input.GetAxis("Horizontal"), -1f, 1f);
-        forward = Mathf.Clamp(Input.GetAxis("Vertical"), 0f, 1f);       //전진만 함
-        back = -1 * Mathf.Clamp(Input.GetAxis("Vertical"), -1f, 0f);   //후진만 함
-
-
-        if (C_ridecar.isRide)
-        {
-            if (Input.GetKey(KeyCode.B))
-            {
-                brake = maxBreak;
-                breakLight_L.SetActive(true);
-                breakLight_R.SetActive(true);
-
-                if (Input.GetKeyUp(KeyCode.B))
-                {
-                    breakLight_L.SetActive(false);
-                    breakLight_R.SetActive(false);
-                }
-            }
-
-            else CarMove();
-        }
-
-        //뒷바퀴 Torque 회전력
-        backL_col.motorTorque = motor * maxTorque;
-        backR_col.motorTorque = motor * maxTorque;
-
-        //뒷바퀴 break
-        backL_col.brakeTorque = brake * maxBreak;
-        backR_col.brakeTorque = brake * maxBreak;
-
-        //앞바퀴 y축 회전각도
-        frontL_col.steerAngle = steer * maxSteerAngle;
-        frontR_col.steerAngle = steer * maxSteerAngle;
-
-        //A, D 입력에 따라 y축 회전
-        frontL_M.localEulerAngles = new Vector3(frontL_M.localEulerAngles.x, steer * maxSteerAngle, frontL_M.localEulerAngles.z);
-        frontR_M.localEulerAngles = new Vector3(frontR_M.localEulerAngles.x, steer * maxSteerAngle, frontR_M.localEulerAngles.z);
-
-        //모델링 회전 wheel colliders의 회전 Torque 값을 받아 같이 회전
-        frontL_M.Rotate(frontL_col.rpm * Time.deltaTime, 0f, 0f);
-        frontR_M.Rotate(frontR_col.rpm * Time.deltaTime, 0f, 0f);
-        backL_M.Rotate(backL_col.rpm * Time.deltaTime, 0f, 0f);
-        backR_M.Rotate(backR_col.rpm * Time.deltaTime, 0f, 0f);
+        //if (!GetInOutCar.instance.carInside) return;
+        CarMoveWheel();
     }
 
-    private void HeadLightOnOff()
+    void Update()
     {
-        isHeadLightOn = !isHeadLightOn;
-        //Debug.Log(isHeadLightOn);
-        headLight_L.SetActive(isHeadLightOn);
-        headLight_R.SetActive(isHeadLightOn);
+        // if (Input.GetKeyDown(KeyCode.Q) && GetInOutCar.instance.carInside)
+        // {
+        //     GetInOutCar.instance.carOutside = true;
+        // }
+        // if (!GetInOutCar.instance.carInside) return;
+
+        if (Input.GetKey(KeyCode.LeftShift))
+            CarBrakeOn();
+        else
+            CarBrakeOff();
+        CarMoveCondition();
+        CarMoveInput();
+        CarLight();
     }
 
-    private void BreakLightOnOff(bool state)
+    private static void CarLight()
     {
-        breakLight_L.SetActive(state);
-        breakLight_R.SetActive(state);
+        if (Input.GetKeyDown(KeyCode.S))
+            CarLightCtrl.backLightsOn = true;
+        else if (Input.GetKeyUp(KeyCode.S))
+            CarLightCtrl.backLightsOn = false;
     }
 
-    private void CarMove()
+    private void CarMoveInput()
     {
-        if (Input.GetKey(KeyCode.W))
-            StartCoroutine(ForwardCar());
-
-        if (Input.GetKey(KeyCode.S))
-            StartCoroutine(BackwardCar());
-
-        if (isReverse)   //후진중일경우
-        {
-            BreakLightOnOff(isReverse);
-            motor = -1 * back;
-            brake = forward;
-        }
-
-        else    //전진중일경우
-        {
-            BreakLightOnOff(isReverse);
-            motor = forward;
-            brake = back;
-        }
+        currentSpeed = rb.velocity.sqrMagnitude;                      // 현재 속도 계산
+        steer = Mathf.Clamp(Input.GetAxisRaw("Horizontal"), -1.0f, 1.0f);      // 조향 입력 (-1 ~ 1)
+        forward = Mathf.Clamp(Input.GetAxisRaw("Vertical"), 0.0f, 1.0f);       // 전진 입력 (0 ~ 1)
+        back = -1 * Mathf.Clamp(Input.GetAxisRaw("Vertical"), -1.0f, 0.0f);    // 후진 입력 (1 ~ 0)
+        brake = Input.GetKey(KeyCode.LeftShift) ? 100 : 0;
+        if (Input.GetKey(KeyCode.W))                    // 전진
+            StartCoroutine(ForwardCar());                   // 전진 상태로 변경
+        if (Input.GetKey(KeyCode.S))                    // 후진
+            StartCoroutine(BackwardCar());                  // 후진 상태로 변경                   
     }
 
-    IEnumerator ForwardCar()
+    IEnumerator ForwardCar()        // 전진 상태로 변경
     {
         yield return new WaitForSeconds(0.1f);
         currentSpeed = 0f;
-
-        if (back > 0f) isReverse = true;
-        if (forward > 0f) isReverse = false;
-
-        BreakLightOnOff(isReverse);
+        if (back > 0f)
+            isReverse = true;
+        if (forward > 0f)
+            isReverse = false;
     }
-
-    IEnumerator BackwardCar()
+    IEnumerator BackwardCar()       // 후진 상태로 변경
     {
         yield return new WaitForSeconds(0.1f);
         currentSpeed = 0.1f;
+        if (back > 0f)
+            isReverse = true;
+        if (forward > 0f)
+            isReverse = false;
+    }
 
-        if (back > 0f) isReverse = true;
-        if (forward > 0f) isReverse = false;
+    private void CarMoveCondition()
+    {
+        if (isReverse)              // 후진 상태 
+            motor = -back;              // 모터 토크 설정. 후진 상태에서는 back 값을 사용
+        else                        // 전진 상태
+            motor = forward;            // 모터 토크 설정. 전진 상태에서는 forward 값을 사용
+    }
 
-        BreakLightOnOff(isReverse);
+    private void CarMoveWheel()
+    {
+        rearLeft_Col.motorTorque = motor * maxTorque;   // 모터 토크 설정
+        rearRight_Col.motorTorque = motor * maxTorque;  // 모터 토크 설정
+        rearLeft_Col.brakeTorque = brake * maxBrake;      // 브레이크 토크 설정
+        rearRight_Col.brakeTorque = brake * maxBrake;     // 브레이크 토크 설정
+
+        frontLeft_Col.steerAngle = steer * maxSteerAngle;   // 조향각 설정. 좌우 조향각을 설정 (앞바퀴)
+        frontRight_Col.steerAngle = steer * maxSteerAngle;  // 조향각 설정. 좌우 조향각을 설정 (앞바퀴)
+        frontLeft_Model.localEulerAngles = new Vector3(frontLeft_Model.localEulerAngles.x, steer * maxSteerAngle, frontLeft_Model.localEulerAngles.z);   // 앞바퀴 모델의 회전값 설정. y축 회전값을 조향각으로 설정
+        frontRight_Model.localEulerAngles = new Vector3(frontRight_Model.localEulerAngles.x, steer * maxSteerAngle, frontRight_Model.localEulerAngles.z);  // 앞바퀴 모델의 회전값 설정. y축 회전값을 조향각으로 설정
+        frontLeft_Model.Rotate(frontLeft_Col.rpm / 60 * 360 * Time.deltaTime, 0, 0);    // 앞바퀴 모델의 회전값 설정. rpm 값에 따라 회전
+        frontRight_Model.Rotate(frontRight_Col.rpm / 60 * 240 * Time.deltaTime, 0, 0);  // 앞바퀴 모델의 회전값 설정. rpm 값에 따라 회전
+        rearLeft_Model.Rotate(rearLeft_Col.rpm / 60 * 360 * Time.deltaTime, 0, 0);      // 뒷바퀴 모델의 회전값 설정. rpm 값에 따라 회전
+        rearRight_Model.Rotate(rearRight_Col.rpm / 60 * 360 * Time.deltaTime, 0, 0);    // 뒷바퀴 모델의 회전값 설정. rpm 값에 따라 회전
+    }
+
+    void CarBrakeOn()
+    {
+        CarLightCtrl.backLightsOn = true;
+        isBrake = true;
+    }
+    void CarBrakeOff()
+    {
+        if (isReverse) return;
+        CarLightCtrl.backLightsOn = false;
+        isBrake = false;
     }
 }
