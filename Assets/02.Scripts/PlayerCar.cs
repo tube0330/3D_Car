@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using Photon.Pun;
 using UnityEngine;
 using UnityStandardAssets.Utility;
@@ -19,6 +18,7 @@ public class PlayerCar : MonoBehaviourPun, IPunObservable
     [Header("Mass Balance")]
     public Vector3 centerOfMass_var = new Vector3(0f, -0.5f, 0f);   // 무게중심 설정. 높이를 조절하여 차량의 무게중심을 조절할 수 있다.
     public Rigidbody rb;
+    private Transform tr;
     [Header("Front Wheel Max Steer Angle")]
     private float maxSteerAngle = 35f;                   // 최대 조향각
     [Header("Max Torque")]
@@ -35,16 +35,21 @@ public class PlayerCar : MonoBehaviourPun, IPunObservable
     private float brake = 0f;                       // 브레이크
 
     public bool isBrake = false;                    // 브레이크 밟았나[인스펙터 노출용]
-    Transform tr;
+
+    private Vector3 curPos = Vector3.zero;              // 동기화된 위치값
+    private Quaternion curRot = Quaternion.identity;    // 동기화된 회전값
 
     void Awake()
     {
-        // photonView.Synchronization = ViewSynchronization.Unreliable;
-        // photonView.ObservedComponents[0] = this;
+        photonView.Synchronization = ViewSynchronization.ReliableDeltaCompressed;
+        photonView.ObservedComponents[0] = this;
+        tr = GetComponent<Transform>();
         rb = GetComponent<Rigidbody>();
-        tr = transform;
-    }
 
+        curPos = tr.position;
+        curRot = tr.rotation;
+    }
+    
     void Start()
     {
         if (photonView.IsMine)
@@ -64,37 +69,47 @@ public class PlayerCar : MonoBehaviourPun, IPunObservable
 
     void FixedUpdate()
     {
-        //if (!GetInOutCar.instance.carInside) return;
-
-        if (!photonView.IsMine) return;
+        //if (!photonView.IsMine) return;
         CarMoveWheel();
     }
 
     void Update()
     {
-        // if (Input.GetKeyDown(KeyCode.Q) && GetInOutCar.instance.carInside)
-        // {
-        //     GetInOutCar.instance.carOutside = true;
-        // }
-        // if (!GetInOutCar.instance.carInside) return;
-
-        if (!photonView.IsMine) return;
-        if (Input.GetKey(KeyCode.LeftShift))
-            CarBrakeOn();
+        if (photonView.IsMine)
+        {
+            CarMoveCondition();
+            CarMoveInput();
+            CarLight();
+        }
         else
-            CarBrakeOff();
-
-        CarMoveCondition();
-        CarMoveInput();
-        CarLight();
+        {
+            tr.position = Vector3.Lerp(tr.position, curPos, Time.deltaTime * 10.0f);
+            tr.rotation = Quaternion.Slerp(tr.rotation, curRot, Time.deltaTime * 10.0f);
+        }
     }
 
-    private static void CarLight()
+    private void CarLight()
     {
+        if (Input.GetKey(KeyCode.LeftShift)) return;
         if (Input.GetKey(KeyCode.S))
             CarLightCtrl.backLightsOn = true;
-        else if (Input.GetKeyUp(KeyCode.S))
+        else if (!Input.GetKey(KeyCode.S))
             CarLightCtrl.backLightsOn = false;
+
+        if (Input.GetKey(KeyCode.LeftShift))
+            CarBrakeOn();
+        else if (!Input.GetKey(KeyCode.S))
+            CarBrakeOff();
+        void CarBrakeOn()
+        {
+            isBrake = true;
+            CarLightCtrl.backLightsOn = isBrake;
+        }
+        void CarBrakeOff()
+        {
+            isBrake = false;
+            CarLightCtrl.backLightsOn = isBrake;
+        }
     }
 
     private void CarMoveInput()
@@ -154,19 +169,6 @@ public class PlayerCar : MonoBehaviourPun, IPunObservable
         rearRight_Model.Rotate(rearRight_Col.rpm / 60 * 360 * Time.deltaTime, 0, 0);    // 뒷바퀴 모델의 회전값 설정. rpm 값에 따라 회전
     }
 
-    void CarBrakeOn()
-    {
-        CarLightCtrl.backLightsOn = true;
-        isBrake = true;
-        Debug.Log(CarLightCtrl.backLightsOn);
-    }
-    void CarBrakeOff()
-    {
-        if (isReverse) return;
-        CarLightCtrl.backLightsOn = false;
-        isBrake = false;
-    }
-
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
         if (stream.IsWriting)
@@ -174,11 +176,10 @@ public class PlayerCar : MonoBehaviourPun, IPunObservable
             stream.SendNext(tr.position);
             stream.SendNext(tr.rotation);
         }
-
-        else
+        else if (stream.IsReading)
         {
-            tr.position = (Vector3)stream.ReceiveNext();
-            tr.rotation = (Quaternion)stream.ReceiveNext();
+            curPos = (Vector3)stream.ReceiveNext();
+            curRot = (Quaternion)stream.ReceiveNext();
         }
     }
 }

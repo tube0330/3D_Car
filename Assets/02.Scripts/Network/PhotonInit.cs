@@ -1,83 +1,86 @@
 using System.Collections;
-using System.Collections.Generic;
 using Photon.Pun;
-using UnityEngine;
-using UnityEngine.SceneManagement;
-using UnityEngine.UI;
 using Photon.Realtime;
+using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
-public class PhotonInit : MonoBehaviourPunCallbacks
+public class Photon_InitialSet : MonoBehaviourPunCallbacks
 {
-    public InputField inputField_ID;
-    public Button Button_join;
-    string userID;
-    string gameVersion = "V1.0";
+    public InputField UserID;
+    public Button JoinRandomButton;
+
+    public string gameVersion = "1.0";
 
     void Awake()
     {
-        PhotonNetwork.GameVersion = gameVersion;
-        PhotonNetwork.AutomaticallySyncScene = true;
-
         if (!PhotonNetwork.IsConnected)
+        {
+            JoinRandomButton.interactable = false;
+            PhotonNetwork.GameVersion = gameVersion;
+            //PhotonNetwork.AutomaticallySyncScene = true;
             PhotonNetwork.ConnectUsingSettings();
-
+            //Log.text = "Connect to Master Server...";
+        }
     }
 
     public override void OnConnectedToMaster()
     {
         print("마스터서버 연결 완");
-        inputField_ID.text = GetUserID();
+        UserID.text = GetUserID();
         PhotonNetwork.JoinLobby();
     }
-
-    string GetUserID()
+    private string GetUserID()
     {
-        userID = PlayerPrefs.GetString("USER_ID");
-
+        string userID = PlayerPrefs.GetString("UserID");
         if (string.IsNullOrEmpty(userID))
-            userID = "USER_" + Random.Range(0, 999).ToString();
-
+            userID = "UserID_" + Random.Range(0, 999).ToString("000");
         return userID;
     }
-
     public override void OnJoinedLobby()
     {
         print("로비에 입장");
-        //PhotonNetwork.JoinRandomRoom(); //로비 입장했으면 아무 방이나 접속하도록
+        JoinRandomButton.interactable = true;
     }
-
     public override void OnJoinRandomFailed(short returnCode, string message)
     {
         print("방 없음");
+        //Log.text = "Error : Join Random Room Failed!";
         PhotonNetwork.CreateRoom("*Room", new RoomOptions { MaxPlayers = 3 });
     }
-
     public override void OnCreateRoomFailed(short returnCode, string message)
     {
-        Debug.Log("오류코드" + returnCode.ToString());
+        //Log.text = "Error : Create Room Failed!";
         print("방 만들기 실패" + message);
-        PhotonNetwork.JoinRandomRoom();  //만들기 실패했으면 다시 로비로 이동
     }
-
     public override void OnCreatedRoom()
     {
-        print("방 만들기 성공");
+        //Log.text = "Create Room Success!";
     }
-
     public override void OnJoinedRoom()
     {
-        print("방 입장 완");
-        PhotonNetwork.NickName = inputField_ID.text;
-        SceneManager.LoadScene("F1TrackDisplayScene");  
+        print("방 만들기 성공");
+        //Log.text = "Join Room Success!";
+        StartCoroutine(LoadScene());
     }
 
-    public void OnButtonClick()
+    public void OnClickJoinRandomRoom()
     {
+        print("방 입장 완");
+        JoinRandomButton.interactable = false;
+        PhotonNetwork.NickName = UserID.text;
+        PlayerPrefs.SetString("UserID", UserID.text);
         PhotonNetwork.JoinRandomRoom();
     }
 
-    void OnGUI()    //왼쪽 상단에 나타냄
+    private IEnumerator LoadScene()
     {
-        GUILayout.Label(PhotonNetwork.NetworkClientState.ToString());   //photonNetwork에 클라이언트 상태 정보 알려줌
+        PhotonNetwork.IsMessageQueueRunning = false;
+        AsyncOperation ao = SceneManager.LoadSceneAsync("F1TrackDisplayScene");
+        yield return ao;
     }
+    private void OnGUI()
+    {
+        GUILayout.Label(PhotonNetwork.NetworkClientState.ToString());
+    }    
 }

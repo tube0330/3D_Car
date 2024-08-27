@@ -1,69 +1,52 @@
 using System.Collections;
 using System.Collections.Generic;
 using Photon.Pun;
+using Photon.Realtime;
 using UnityEngine;
 
 public class GameManager : MonoBehaviourPunCallbacks
 {
-    static GameManager instance;
-    public static GameManager g_instance
-    {
-        get { return instance; }
-        set
-        {
-            if (instance == null)
-                instance = value;
-            else if (instance != value)
-                Destroy(value.gameObject);
-        }
-    }
-
-    [SerializeField] GameObject carPrefabs;
-    /* [SerializeField] List<Transform> spawnList;
-    [SerializeField] int index; */
-    int playerClamp;
-    int cnt;
+    public static GameManager instance;
+    private int PlayerClamp;
+    private int Count;
 
     void Awake()
     {
-        playerClamp = PhotonNetwork.CurrentRoom.MaxPlayers;
-        cnt = PhotonNetwork.CurrentRoom.PlayerCount;
+        if (instance == null)
+            instance = this;
+        else if (instance != this)
+            Destroy(gameObject);
 
-        if (playerClamp > 3) return;
-
-        CreateCar(cnt);
+        PlayerClamp = PhotonNetwork.CurrentRoom.MaxPlayers;
+        Count = PhotonNetwork.CurrentRoom.PlayerCount;
+        if (PlayerClamp > 4) return;
+        CreateCar(Count);
         PhotonNetwork.IsMessageQueueRunning = true;
     }
 
-    /* void Start()
+    private void CreateCar(int Count)
     {
-        index = 0;
-        var spawnPoint = GameObject.Find("SpawnPoint").gameObject;
-        if (spawnPoint != null)
-            spawnPoint.GetComponentsInChildren<Transform>(spawnList);
-        spawnList.RemoveAt(0);
-    } */
-
-    void CreateCar(int cnt)
-    {
-        switch (cnt)
+        switch (Count)
         {
             case 1:
-                Vector3 point1 = new Vector3(0f, 0f, -10f);
-                Quaternion rot1 = Quaternion.Euler(0f, 90f, 0f);
-                PhotonNetwork.Instantiate(carPrefabs.name, point1, rot1);
+                Vector3 SpawnPos1 = new(-50, 2, 0);
+                Quaternion SpawnRot1 = Quaternion.Euler(0f, 89f, 0f);
+                PhotonNetwork.Instantiate(nameof(PlayerCar), SpawnPos1, SpawnRot1, 0, null);
                 break;
-
             case 2:
-                Vector3 point2 = new Vector3(0f, 0f, 0f);
-                Quaternion rot2 = Quaternion.Euler(0f, 90f, 0f);
-                PhotonNetwork.Instantiate(carPrefabs.name, point2, rot2);
+                Vector3 SpawnPos2 = new(0, 2, 0);
+                Quaternion SpawnRot2 = Quaternion.Euler(0f, 89f, 0f);
+                PhotonNetwork.Instantiate(nameof(PlayerCar), SpawnPos2, SpawnRot2, 0, null);
                 break;
-
             case 3:
-                Vector3 point3 = new Vector3(0f, 0f, 10f);
-                Quaternion rot3 = Quaternion.Euler(0f, 90f, 0f);
-                PhotonNetwork.Instantiate(carPrefabs.name, point3, rot3);
+                Vector3 SpawnPos3 = new(50, 2, 0);
+                Quaternion SpawnRot3 = Quaternion.Euler(0f, 89f, 0f);
+                PhotonNetwork.Instantiate(nameof(PlayerCar), SpawnPos3, SpawnRot3, 0, null);
+                break;
+            case 4:
+                Vector3 SpawnPos4 = new(100, 2, 0);
+                Quaternion SpawnRot4 = Quaternion.Euler(0f, 89f, 0f);
+                PhotonNetwork.Instantiate(nameof(PlayerCar), SpawnPos4, SpawnRot4, 0, null);
                 break;
         }
     }
