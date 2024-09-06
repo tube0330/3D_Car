@@ -27,9 +27,13 @@ public class AICar : MonoBehaviour
     public float curSpeed = 0f; //현재 속도
     int curNode = 0;    //현재노드
     float maxSpeed = 100f;
-    public float maxMotorTorque = 1000f; //wheel collider가 회전하는 최대 힘
+    public float maxMotorTorque = 2000f; //wheel collider가 회전하는 최대 힘
     public float maxSteerAngle = 30f; //앞바퀴 회전각도
 
+    [Header("Avoid Obstacle")]
+    [SerializeField] float sensorLength = 10f;
+    [SerializeField] Vector3 frontSensorPos = new Vector3(0f, 0.2f, 0f);    //전방센서
+    [SerializeField] public Transform SensorStartPos;   //센서위치를 차 안에 오브젝트로 설정
     void Start()
     {
         rb = GetComponent<Rigidbody>();
