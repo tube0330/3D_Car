@@ -32,21 +32,20 @@ public class AICar : MonoBehaviour
 
     [Header("Obstacle")]
     LayerMask trackLayer;
-    [SerializeField] float sensorLength = 10f;
+    [SerializeField] float sensorLength = 20f;
     [SerializeField] Vector3 FrontSensorPos = new(0f, 0.25f, 0.5f);    // 전방 센서 위치
     [SerializeField] Transform StartSensorPos;           // 센서 시작 위치
     [SerializeField] float FrontSideSensorPos = 0.4f;    // 측면 전방 센서 위치
     [SerializeField] float frontSensorAngle = 30f;       // 측면 센서 회전 각도
-    bool isavoid = false;               // 회피 여부
+    [SerializeField] bool isavoid = false;               // 회피 여부
     [SerializeField] float targetSteerAngle = 0;         // 목표 조향각
-
 
     public float curSpeed = 0;      // 현재 속도
     float maxSpeed = 100f;          // 최대 속도
     int curNode = 0;                // 현재 노드
-    float maxTorque = 500f;         // 최대 토크
+    public float maxTorque = 1000f;         // 최대 토크
     float maxSteerAngle = 35f;      // 최대 조향각
-    float maxBrake = 150000f;       // 최대 브레이크
+    //float maxBrake = 150000f;       // 최대 브레이크
 
     void Start()
     {
@@ -70,6 +69,7 @@ public class AICar : MonoBehaviour
         Drive();
         CheckWayPointDistance();
         CarSensor();
+        LerpToSteerAngle();
     }
 
     void ApplySteer()
@@ -79,7 +79,6 @@ public class AICar : MonoBehaviour
         //FrontL.steerAngle = newSteer;                                               // 좌측 앞바퀴의 조향각을 설정합니다.
         //FrontR.steerAngle = newSteer;                                               // 우측 앞바퀴의 조향각을 설정합니다.
         targetSteerAngle = newSteer;
-        LerpToSteerAngle();
     }
 
     void Drive()
@@ -122,6 +121,7 @@ public class AICar : MonoBehaviour
         if (Physics.Raycast(sensorStartPos, tr.forward, out hit, sensorLength, ~trackLayer))
         {
             isavoid = true;
+            avoidMultiplier -= 1.5f;
             Debug.Log(isavoid);
         }
         // FrontRight Angle Sensor
@@ -140,11 +140,12 @@ public class AICar : MonoBehaviour
         if (Physics.Raycast(sensorStartPos, tr.forward, out hit, sensorLength, ~trackLayer))
         {
             isavoid = true;
+            avoidMultiplier += 1.5f;
             Debug.Log(isavoid);
             Debug.DrawLine(sensorStartPos, sensorStartPos + tr.forward * sensorLength, isavoid ? Color.red : Color.green);
         }
         // FrontLeft Angle Sensor
-        else if (Physics.Raycast(sensorStartPos, Quaternion.AngleAxis(-frontSensorAngle, transform.up) * transform.forward, out hit, sensorLength, ~trackLayer))
+        if (Physics.Raycast(sensorStartPos, Quaternion.AngleAxis(-frontSensorAngle, transform.up) * transform.forward, out hit, sensorLength, ~trackLayer))
         {
             Debug.DrawLine(sensorStartPos, hit.point, Color.blue);
             isavoid = true;
@@ -177,9 +178,9 @@ public class AICar : MonoBehaviour
         if (Vector3.Distance(tr.position, pathList[curNode].position) <= 20f)       // 현재 노드와의 거리가 10f 이하일 경우
         {
             if (curNode == pathList.Count - 1)  // 현재 노드가 마지막 노드일 경우
-                curNode = 0;    // 첫 번째 노드로 이동합니다.
+                curNode = 0;    // 첫 번째 노드로 이동
             else
-                curNode++;      // 다음 노드로 이동합니다.
+                curNode++;      // 다음 노드로 이동
         }
 
     }
@@ -187,5 +188,7 @@ public class AICar : MonoBehaviour
     void LerpToSteerAngle()
     {
         FrontL.steerAngle = Mathf.Lerp(FrontL.steerAngle, targetSteerAngle, Time.deltaTime * 10f);
+        FrontR.steerAngle = Mathf.Lerp(FrontR.steerAngle, targetSteerAngle, Time.deltaTime * 10f);
     }
+
 }
