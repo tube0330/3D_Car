@@ -13,3 +13,6 @@
 - PathTransforms 참조해서 이동
 - 타이어 Wheel Collider 배치 모델링 배치
 2. CarWheel: Wheel Collider에 따라 타이어도 같이 움직이도록
+
+# 240906
+1. Raycast를 사용해 장애물 피해가기
