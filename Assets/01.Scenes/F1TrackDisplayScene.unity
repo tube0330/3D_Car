@@ -2075,7 +2075,12 @@ MonoBehaviour:
   FrontR_Tr: {fileID: 2097253120760327954}
   BackL_Tr: {fileID: 5623999953393323438}
   BackR_Tr: {fileID: 2052723327524940429}
-  FrontSensorPos: {x: 0, y: 0.2, z: 0.5}
+  sensorLength: 10
+  FrontSensorPos: {x: 0, y: 0.2, z: 0.2}
+  StartSensorPos: {fileID: 0}
+  FrontSideSensorPos: 0.4
+  frontSensorAngle: 30
+  targetSteerAngle: 0
   curSpeed: 0
 --- !u!65 &5430611582095057474
 BoxCollider:
