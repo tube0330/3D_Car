@@ -2,44 +2,57 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// 1. 무게중심
+// 2. pathTransform 참조
+// 3. 타이어의 휠 Collider 배치, 모델 배치
+
 public class AICar : MonoBehaviour
 {
-    [Header("CentOfMass")]
-    [SerializeField] Rigidbody rb;
-    public Vector3 CentOfMass = new Vector3(0f, -0.5f, 0f);
-
+    [Header("Center of Mass")]
+    Transform tr;
+    Rigidbody rb;
+    Vector3 CentOfMass = new Vector3(0f, -0.5f, 0f);
     [Header("Path")]
     [SerializeField] Transform path;
     [SerializeField] Transform[] pathTransforms;
     [SerializeField] List<Transform> pathList;
+    [Header("Wheel Collider")]
+    [SerializeField] WheelCollider FrontL;
+    [SerializeField] WheelCollider FrontR;
+    [SerializeField] WheelCollider BackL;
+    [SerializeField] WheelCollider BackR;
+    [Header("Models")]
+    [SerializeField] Transform FrontL_Tr;
+    [SerializeField] Transform FrontR_Tr;
+    [SerializeField] Transform BackL_Tr;
+    [SerializeField] Transform BackR_Tr;
 
-    [Header("Wheel Colliders")]
-    [SerializeField] WheelCollider Front_L;
-    [SerializeField] WheelCollider Front_R;
-    [SerializeField] WheelCollider Back_L;
-    [SerializeField] WheelCollider Back_R;
-    [Header("Modeling")]
-    [SerializeField] Transform Front_L_tr;
-    [SerializeField] Transform Front_R_tr;
-    [SerializeField] Transform Back_L_tr;
-    [SerializeField] Transform Back_R_tr;
+    [Header("Obstacle")]
+    LayerMask trackLayer;
+    float sensorLength = 10f;
+    [SerializeField] Vector3 FrontSensorPos = new(0f, 0.25f, 0.5f);    // 전방 센서 위치
+    Transform StartSensorPos;                      // 센서 시작 위치
+    float FrontSideSensorPos = 0.4f;               // 측면 전방 센서 위치
+    float frontSensorAngle = 30f;              // 측면 센서 회전 각도
+    bool isavoid = false;                                          // 회피 여부
+    float targetSteerAngle = 0;                                     // 목표 조향각
 
-    public float curSpeed = 0f; //현재 속도
-    int curNode = 0;    //현재노드
-    float maxSpeed = 100f;
-    public float maxMotorTorque = 2000f; //wheel collider가 회전하는 최대 힘
-    public float maxSteerAngle = 30f; //앞바퀴 회전각도
 
-    [Header("Avoid Obstacle")]
-    [SerializeField] float sensorLength = 10f;
-    [SerializeField] Vector3 frontSensorPos = new Vector3(0f, 0.2f, 0f);    //전방센서
-    [SerializeField] public Transform SensorStartPos;   //센서위치를 차 안에 오브젝트로 설정
+    public float curSpeed = 0;      // 현재 속도
+    float maxSpeed = 100f;          // 최대 속도
+    int curNode = 0;                // 현재 노드
+    float maxTorque = 500f;         // 최대 토크
+    float maxSteerAngle = 35f;      // 최대 조향각
+    float maxBrake = 150000f;       // 최대 브레이크
+
     void Start()
     {
+        tr = transform;
         rb = GetComponent<Rigidbody>();
         rb.centerOfMass = CentOfMass;
         path = GameObject.Find("PathTransform").transform;
         pathTransforms = path.GetComponentsInChildren<Transform>();
+        trackLayer = 1 << LayerMask.NameToLayer("TRACK");
 
         for (int i = 0; i < pathTransforms.Length; i++)
         {
@@ -48,60 +61,114 @@ public class AICar : MonoBehaviour
         }
     }
 
-    /* void Update()
+    void Update()
     {
-
-    } */
+        //CarSensor();
+    }
 
     void FixedUpdate()
     {
         ApplySteer();
         Drive();
         CheckWayPointDistance();
+        CarSensor();
     }
 
-    void ApplySteer()   //앞바퀴 wheel collider의 회전각도에 따라 회전
+    void ApplySteer()
     {
-        Vector3 relativeVector = transform.InverseTransformPoint(pathList[curNode].position);   //월드좌표를 로컬좌표로 변환
-
-        float newSteer = relativeVector.x / relativeVector.magnitude * maxSteerAngle; //Pathtransform.x값 / Pathtransform의 개체 크기 * 30f
-
-        Front_L.steerAngle = newSteer;
-        Front_R.steerAngle = newSteer;
+        Vector3 relativeVector = transform.InverseTransformPoint(pathList[curNode].position);   // 현재 노드의 위치를 상대좌표로 변환합니다.
+        float newSteer = relativeVector.x / relativeVector.magnitude * maxSteerAngle;           // 조향각을 계산합니다.
+        FrontL.steerAngle = newSteer;                                               // 좌측 앞바퀴의 조향각을 설정합니다.
+        FrontR.steerAngle = newSteer;                                               // 우측 앞바퀴의 조향각을 설정합니다.
     }
 
     void Drive()
     {
-        curSpeed = 2 * Mathf.PI * Front_L.radius * Front_L.rpm * 60 / 1000;
-        /* 바퀴 둘레 계산: 2 * Mathf.PI * Front_L.radius로 바퀴의 둘레를 구합니다.
-        분당 거리 계산: 바퀴 둘레에 분당 회전수(rpm)를 곱하여 분당 이동 거리를 구합니다.
-        초당 거리 계산: 분당 거리를 60으로 나누어 초당 이동 거리를 구합니다.
-        속도 계산: 초당 이동 거리를 1000으로 나누어 미터/초 단위의 속도로 변환합니다. */
+        curSpeed = 2 * Mathf.PI * FrontL.radius * FrontL.rpm * 60 / 1000;           // 현재 속도를 계산합니다.
 
         if (curSpeed < maxSpeed)
         {
-            //최대 구동력을 적용하여 차량이 계속 가속하도록 함
-            Back_L.motorTorque = maxMotorTorque;
-            Back_R.motorTorque = maxMotorTorque;
+            BackL.motorTorque = maxTorque;
+            BackR.motorTorque = maxTorque;
         }
-
         else
         {
-            //속도가 설정된 최대 속도에 도달했으므로 구동력을 멈추어 더 이상의 가속을 방지하고, 속도를 일정하게 유지하려는 의도
-            Back_L.motorTorque = 0;
-            Back_R.motorTorque = 0;
+            BackL.motorTorque = 0;
+            BackR.motorTorque = 0;
         }
+    }
+
+    void CarSensor()
+    {
+        #region Raycast Obstacles
+        RaycastHit hit;
+        Vector3 sensorStartPos = tr.position;
+        sensorStartPos += tr.forward * FrontSensorPos.z;
+        sensorStartPos += tr.up * FrontSensorPos.y;
+        float avoidMultiplier = 0f;
+        isavoid = false;
+
+        // FrontCenter Sensor
+        if (Physics.Raycast(sensorStartPos, tr.forward, out hit, sensorLength, ~trackLayer))
+        {
+            isavoid = true;
+            Debug.Log(isavoid);
+        }
+        Debug.DrawLine(sensorStartPos, sensorStartPos + tr.forward * sensorLength, isavoid ? Color.red : Color.green);
+
+        // FrontRight Sensor
+        sensorStartPos += tr.right * FrontSideSensorPos;
+        if (Physics.Raycast(sensorStartPos, tr.forward, out hit, sensorLength, ~trackLayer))
+        {
+            isavoid = true;
+            Debug.Log(isavoid);
+        }
+        // FrontRight Angle Sensor
+        else if (Physics.Raycast(sensorStartPos, Quaternion.AngleAxis(frontSensorAngle, transform.up) * transform.forward, out hit, sensorLength, ~trackLayer))
+        {
+            Debug.DrawLine(sensorStartPos, hit.point, Color.blue);
+            isavoid = true;
+            avoidMultiplier -= 0.5f;
+        }
+        Debug.DrawLine(sensorStartPos, sensorStartPos + tr.forward * sensorLength, isavoid ? Color.red : Color.green);
+
+        // FrontLeft Sensor
+        sensorStartPos -= tr.right * FrontSideSensorPos * 2f;
+        if (Physics.Raycast(sensorStartPos, tr.forward, out hit, sensorLength, ~trackLayer))
+        {
+            isavoid = true;
+            Debug.Log(isavoid);
+            Debug.DrawLine(sensorStartPos, sensorStartPos + tr.forward * sensorLength, isavoid ? Color.red : Color.green);
+        }
+        // FrontLeft Angle Sensor
+        else if (Physics.Raycast(sensorStartPos, Quaternion.AngleAxis(-frontSensorAngle, transform.up) * transform.forward, out hit, sensorLength, ~trackLayer))
+        {
+            Debug.DrawLine(sensorStartPos, hit.point, Color.blue);
+            isavoid = true;
+            avoidMultiplier += 0.5f;
+        }
+        #endregion
+
+        #region Avoid Obstacles
+        if (avoidMultiplier == 0)    //피할 물체가 없다면
+        {
+            if (Physics.Raycast(sensorStartPos, Quaternion.AngleAxis(frontSensorAngle, tr.up) * transform.forward, out hit, sensorLength, ~trackLayer))
+            {
+                isavoid = true;
+            }
+        }
+        #endregion
     }
 
     void CheckWayPointDistance()
     {
-        Debug.Log(curNode);
-        if(Vector3.Distance(transform.position, pathList[curNode].position) <= 10f)
+        if (Vector3.Distance(transform.position, pathList[curNode].position) <= 20f)       // 현재 노드와의 거리가 10f 이하일 경우
         {
-            if(curNode == pathList.Count - 1)    //마지막에 있을 때 다시 0으로 초기화
-            curNode = 0;
-
-            else curNode++; //다음 waypoint로 이동
+            if (curNode == pathList.Count - 1)                                              // 현재 노드가 마지막 노드일 경우
+                curNode = 0;                                                                // 첫 번째 노드로 이동합니다.
+            else
+                curNode++;                                                                  // 다음 노드로 이동합니다.
         }
+
     }
 }

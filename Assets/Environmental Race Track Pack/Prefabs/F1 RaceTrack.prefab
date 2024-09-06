@@ -9,9 +9,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 431926}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: F1 RaceTrack
-  m_TagString: Untagged
+  m_TagString: TRACK
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -51,7 +51,7 @@ GameObject:
   - component: {fileID: 475622}
   - component: {fileID: 3317230}
   - component: {fileID: 2374130}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Plane.001
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -134,7 +134,7 @@ GameObject:
   - component: {fileID: 422634}
   - component: {fileID: 3300970}
   - component: {fileID: 2360024}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Plane
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -217,7 +217,7 @@ GameObject:
   - component: {fileID: 478546}
   - component: {fileID: 3337540}
   - component: {fileID: 2304594}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Bleacher.001
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -301,7 +301,7 @@ GameObject:
   - component: {fileID: 3345248}
   - component: {fileID: 2394580}
   - component: {fileID: 6400932}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: MainTrack_Object
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -410,7 +410,7 @@ GameObject:
   - component: {fileID: 494852}
   - component: {fileID: 3360774}
   - component: {fileID: 2346276}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Bleacher.002
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -494,7 +494,7 @@ GameObject:
   - component: {fileID: 3365000}
   - component: {fileID: 2329202}
   - component: {fileID: 6432310}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Pit_Road
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -600,7 +600,7 @@ GameObject:
   - component: {fileID: 457894}
   - component: {fileID: 3395614}
   - component: {fileID: 2379042}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: TreeLine
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -683,7 +683,7 @@ GameObject:
   - component: {fileID: 449236}
   - component: {fileID: 3374020}
   - component: {fileID: 2321946}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Bleacher
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -766,7 +766,7 @@ GameObject:
   - component: {fileID: 454668}
   - component: {fileID: 3326244}
   - component: {fileID: 2350346}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: NurbsPath
   m_TagString: Untagged
   m_Icon: {fileID: 0}
